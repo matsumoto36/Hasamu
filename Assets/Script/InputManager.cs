@@ -8,6 +8,7 @@ public enum PlayerInput {
 	Player_Up,
 	Player_Down,
 	Player_Attack,
+	Player_Switch,
 }
 
 public class InputManager : MonoBehaviour {
@@ -16,7 +17,7 @@ public class InputManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		input = new bool[10];
+		input = new bool[12];
 	}
 	
 	// Update is called once per frame
@@ -26,13 +27,15 @@ public class InputManager : MonoBehaviour {
 		input[1] = Input.GetKey(KeyCode.D);
 		input[2] = Input.GetKey(KeyCode.W);
 		input[3] = Input.GetKey(KeyCode.S);
-		input[4] = Input.GetKey(KeyCode.LeftShift);
+		input[4] = Input.GetKey(KeyCode.Z);
+		input[5] = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
 
-		input[5] = Input.GetKey(KeyCode.LeftArrow);
-		input[6] = Input.GetKey(KeyCode.RightArrow);
-		//input[7] = Input.GetKey(KeyCode.UpArrow);
-		//input[8] = Input.GetKey(KeyCode.DownArrow);
-		input[9] = Input.GetKey(KeyCode.RightShift);
+		input[6] = Input.GetKey(KeyCode.LeftArrow);
+		input[7] = Input.GetKey(KeyCode.RightArrow);
+		input[8] = Input.GetKey(KeyCode.UpArrow);
+		input[9] = Input.GetKey(KeyCode.DownArrow);
+		input[10] = Input.GetKey(KeyCode.Z);
+		input[11] = Input.GetKey(KeyCode.RightShift) | Input.GetKey(KeyCode.LeftShift);
 
 	}
 
@@ -43,6 +46,6 @@ public class InputManager : MonoBehaviour {
 	/// <param name="input">入力</param>
 	/// <returns>あるかどうか</returns>
 	public static bool GetInput(int playerID, PlayerInput playerInput) {
-		return input[(playerID * 5) + (int)playerInput];
+		return input[(playerID * 6) + (int)playerInput];
 	}
 }

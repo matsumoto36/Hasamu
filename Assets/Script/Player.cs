@@ -10,15 +10,21 @@ public class Player : MonoBehaviour {
 	int playerID;
 
 	Vector3 moveVec = new Vector3(0, 1, 0);
+	float move = 0;
 	Quaternion moveRot;
 	GameObject body;
 	Arm playerArm;
 
-	float rotSpeed = 100;
+	float slowPos = -5;
+	float fastPos = -2;
+
+	float rotSpeed = 60;
 	float moveSpeed = 5;
 
 	[SerializeField]
 	bool isAttack = false;
+
+	bool isSlow = true;
 
 	// Use this for initialization
 	void Start () {
@@ -39,7 +45,10 @@ public class Player : MonoBehaviour {
 		//移動
 		Move();
 		//攻撃
-		if(RCheck() && EnemyCheck()) Attack();
+		//if(RCheck() && EnemyCheck()) Attack();
+		if(isAttack) Attack();
+
+
 
 	}
 
@@ -90,8 +99,17 @@ public class Player : MonoBehaviour {
 	/// 移動系
 	/// </summary>
 	void Move() {
-		transform.rotation *= moveRot;
-		transform.parent.position += moveVec * moveSpeed * Time.deltaTime;
+		transform.parent.rotation *= moveRot;
+		//transform.parent.position += moveVec * moveSpeed * Time.deltaTime;
+
+
+		Vector3 plPos = transform.GetChild(0).localPosition;
+		plPos.x = Mathf.Lerp(plPos.x, isSlow ? slowPos : fastPos, 0.1f);
+
+		foreach(var p in playerList) {
+			p.transform.GetChild(0).localPosition = plPos;
+		}
+		
 	}
 
 
@@ -102,13 +120,16 @@ public class Player : MonoBehaviour {
 	void InputKey() {
 
 		//回転の入力
-		float inputRot = InputManager.GetInput(playerID, PlayerInput.Player_Left) ? 1 : InputManager.GetInput(playerID, PlayerInput.Player_Right) ? -1 : 0;
-		float rotSpd = Time.deltaTime * rotSpeed * inputRot;
+		float inputRot = InputManager.GetInput(playerID, PlayerInput.Player_Left) ? -1 : InputManager.GetInput(playerID, PlayerInput.Player_Right) ? 1 : 0;
+		float rotSpd = Time.deltaTime * rotSpeed * inputRot * (transform.GetChild(0).localPosition.x + 6);
 		moveRot = Quaternion.AngleAxis(rotSpd, transform.up);
 
 		//移動の入力
-		float inputMove = InputManager.GetInput(playerID, PlayerInput.Player_Up) ? 1 : InputManager.GetInput(playerID, PlayerInput.Player_Down) ? -1 : 0;
-		moveVec = new Vector3(0, inputMove, 0).normalized;
+		isSlow = !InputManager.GetInput(playerID, PlayerInput.Player_Switch);
+
+		//float inputMove = InputManager.GetInput(playerID, PlayerInput.Player_Up) ? 1 : InputManager.GetInput(playerID, PlayerInput.Player_Down) ? -1 : 0;
+		//moveVec = new Vector3(0, inputMove, 0).normalized;
+		//move = inputMove;
 
 		//攻撃の入力
 		isAttack = InputManager.GetInput(playerID, PlayerInput.Player_Attack);

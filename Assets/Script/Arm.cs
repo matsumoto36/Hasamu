@@ -27,8 +27,8 @@ public class Arm : MonoBehaviour {
 	List<TestEnemy> enemyList = new List<TestEnemy>();
 	List<Vector3> enemyOffset = new List<Vector3>();
 
-	float pushSpeed = 5.0f;
-	float pullSpeed = 0.8f;
+	float pushSpeed = 3.0f;
+	float pullSpeed = 1.5f;
 
 	bool isPull = false;
 
